@@ -4,7 +4,7 @@ import requests
 app = Flask(__name__)
 IFTTT_KEY=os.environ.get("IFTTT_KEY")
 IFTTT_EVENT_NAME=os.environ.get("IFTTT_EVENT_NAME")
-IFTTT_URL="https://maker.ifttt.com/trigger/"+IFTTT_KEY+"/with/key/"+IFTTT_EVENT_NAME
+IFTTT_URL="https://maker.ifttt.com/trigger/"+IFTTT_KEY+"/with/key/"+IFTTT_KEY
 
 
 
