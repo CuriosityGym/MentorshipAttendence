@@ -1,6 +1,7 @@
 from flask import Response, Flask, current_app as app
 import os
 import requests
+import sys 
 app = Flask(__name__)
 IFTTT_KEY=os.environ.get("IFTTT_KEY")
 IFTTT_EVENT_NAME=os.environ.get("IFTTT_EVENT_NAME")
@@ -17,6 +18,8 @@ def acceptSwipeRequest(cardID, locationID):
     try:
         cardOwnerName=os.environ.get(cardID)
         dataURL=IFTTT_URL+ "?value1="+cardOwnerName+"&value2="+locationID+"&value3="
+        
+        sys.stdout.write(dataURL)
         response=requests.get(IFTTT_URL)
         return response.text
     except:
