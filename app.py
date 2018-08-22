@@ -5,6 +5,8 @@ import sys
 app = Flask(__name__)
 IFTTT_KEY=os.environ.get("IFTTT_KEY")
 IFTTT_EVENT_NAME=os.environ.get("IFTTT_EVENT_NAME")
+#IFTTT_EVENT_NAME="track_mentorship"
+#IFTTT_KEY="c1BVwMuv-fI8ryLpLIihJe"
 IFTTT_URL="https://maker.ifttt.com/trigger/"+IFTTT_EVENT_NAME+"/with/key/"+IFTTT_KEY
 
 
@@ -17,14 +19,15 @@ def index():
 def acceptSwipeRequest(cardID, locationID):
     try:
         cardOwnerName=os.environ.get(cardID)
-        dataURL=IFTTT_URL+ "?value1="+cardOwnerName+"&value2="+locationID+"&value3="
-        print(dataURL)
-        sys.stdout.write(dataURL)
-        response=requests.get(IFTTT_URL)
+        data={}
+        data["value1"]=cardOwnerName
+        data["value2"]=locationID
+        data["value3"]=""        
+        #sys.stdout.write(IFTTT_URL)
+        response=requests.post(IFTTT_URL, data=data)
         return response.text
     except:
-        return "Not available"
-    #return "a"
+        return "Error"
  
 
 if __name__ == "__main__":
