@@ -18,7 +18,7 @@ def acceptSwipeRequest(cardID, locationID):
     try:
         cardOwnerName=os.environ.get(cardID)
         dataURL=IFTTT_URL+ "?value1="+cardOwnerName+"&value2="+locationID+"&value3="
-        
+        print(dataURL)
         sys.stdout.write(dataURL)
         response=requests.get(IFTTT_URL)
         return response.text
