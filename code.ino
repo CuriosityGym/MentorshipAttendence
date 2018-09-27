@@ -4,12 +4,15 @@
 #include <WiFiManager.h>  
 #include <SPI.h>
 #include <MFRC522.h>
+#include <MD5Builder.h>
 constexpr uint8_t RST_PIN = D3;     // Configurable, see typical pin layout above
 constexpr uint8_t SS_PIN = D8;     // Configurable, see typical pin layout above 
 MFRC522 rfid(SS_PIN, RST_PIN); // Instance of the class
 MFRC522::MIFARE_Key key; 
 const char* location_ID= "5678";
 const char* heroku_URL = "mentorshipattendence.herokuapp.com";
+MD5Builder _md5;
+int salt=5;
 
 void setup() { 
   Serial.begin(9600);
@@ -50,13 +53,14 @@ void hit_url(byte *UID, byte buffersize){
   for(int i=0;i<buffersize;i++){
     s+= UID[i];
     }
-   Serial.println(s);
+    s+=salt;
+    s=md5(s);
    if (!client.connect(heroku_URL, httpPort))  // Make sure we can connect
       {
          return;
          Serial.println("not connected");
       } 
-    String url = "/" + String(s) + "/" + String(location_ID); // URL for the request
+    String url = "/" + s + "/" + String(location_ID); // URL for the request
    // Set some values for the JSON data depending on which event has been triggered
     //String value_1 = "MH 37T 5770";
     //String value_2 = String(h);
@@ -94,3 +98,10 @@ void hit_url(byte *UID, byte buffersize){
              Serial.println(data); 
            }
   }
+
+String md5(String str) {
+  _md5.begin();
+  _md5.add(String(str));
+  _md5.calculate();
+  return _md5.toString();
+}
