@@ -1,4 +1,5 @@
 from flask import Response, Flask, current_app as app
+from datetime import date, time
 import os
 import requests
 import sys 
@@ -26,7 +27,7 @@ def acceptSwipeRequest(cardID, locationID):
             data={}
             data["value1"]=cardOwnerName
             data["value2"]=locationID
-            data["value3"]=""        
+            data["value3"]=datetime.now()        
             #sys.stdout.write(IFTTT_URL)
             response=requests.post(IFTTT_MENTORSHIP_URL, data=data)
             return response.text
@@ -34,7 +35,7 @@ def acceptSwipeRequest(cardID, locationID):
             data={}
             data["value1"]=cardID
             data["value2"]=locationID
-            data["value3"]=""        
+            data["value3"]=datetime.now()        
             #sys.stdout.write(IFTTT_URL)
             response=requests.post(IFTTT_UNKNOWN_CARD_URL, data=data)
             return response.text
