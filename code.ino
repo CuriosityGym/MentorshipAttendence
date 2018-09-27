@@ -36,22 +36,27 @@ void loop() {
     Serial.print(rfid.uid.uidByte[i]);
   }
   Serial.println();
-  hit_url(rfid.uid.uidByte);     
+  hit_url(rfid.uid.uidByte,rfid.uid.size);     
   rfid.PICC_HaltA();
   rfid.PCD_StopCrypto1();
   }
 }
 
-void hit_url(byte *UID){
+void hit_url(byte *UID, byte buffersize){
   WiFiClient client;
   // Set the http Port
   const int httpPort = 80;
+  String s="";
+  for(int i=0;i<buffersize;i++){
+    s+= UID[i];
+    }
+   Serial.println(s);
    if (!client.connect(heroku_URL, httpPort))  // Make sure we can connect
       {
          return;
          Serial.println("not connected");
       } 
-    String url = "/" + String(UID) + "/" + String(location_ID); // URL for the request
+    String url = "/" + String(s) + "/" + String(location_ID); // URL for the request
    // Set some values for the JSON data depending on which event has been triggered
     //String value_1 = "MH 37T 5770";
     //String value_2 = String(h);
