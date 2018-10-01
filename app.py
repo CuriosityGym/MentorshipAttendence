@@ -23,11 +23,12 @@ def index():
 def acceptSwipeRequest(cardID, locationID):
     try:
         cardOwnerName=os.environ.get(cardID)
+        locationName=os.environ.get(locationID)
         if(cardOwnerName is not None):
             
             data={}
             data["value1"]=cardOwnerName
-            data["value2"]=locationID
+            data["value2"]=locationName
             data["value3"]=datetime.now() + timedelta(minutes=330)        
             #sys.stdout.write(IFTTT_URL)
             response=requests.post(IFTTT_MENTORSHIP_URL, data=data)
@@ -36,7 +37,7 @@ def acceptSwipeRequest(cardID, locationID):
             data={}
             data["value1"]=cardID
             data["value2"]=locationID
-            data["value3"]=datetime.now()        
+            data["value3"]=datetime.now()+timedelta(minutes=330)         
             #sys.stdout.write(IFTTT_URL)
             response=requests.post(IFTTT_UNKNOWN_CARD_URL, data=data)
             return response.text
