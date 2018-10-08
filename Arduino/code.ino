@@ -4,7 +4,9 @@
 #include <WiFiManager.h>  
 #include <SPI.h>
 #include <MFRC522.h>
+#include <Adafruit_NeoPixel.h>
 #include <MD5Builder.h>
+#define PIN D1
 constexpr uint8_t RST_PIN = D3;     // Configurable, see typical pin layout above
 constexpr uint8_t SS_PIN = D8;     // Configurable, see typical pin layout above 
 MFRC522 rfid(SS_PIN, RST_PIN); // Instance of the class
@@ -12,7 +14,9 @@ MFRC522::MIFARE_Key key;
 const char* location_ID= "5678";
 const char* heroku_URL = "mentorshipattendence.herokuapp.com";
 MD5Builder _md5;
-int salt=5;
+int salt=5,q;
+unsigned long w;
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(3, PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() { 
   Serial.begin(9600);
@@ -26,9 +30,19 @@ void setup() {
   //wifiManager.setAPStaticIPConfig(IPAddress(10,0,1,1), IPAddress(10,0,1,1), IPAddress(255,255,255,0));  //set custom ip for portal
   wifiManager.autoConnect("Mentee_Attendance");
   Serial.println("connected:)");
+  pinMode(D2,OUTPUT);
+  strip.begin();
+  strip.setPixelColor(0, 255, 0, 0);
+  strip.show();
 }
  
-void loop() { 
+void loop() {
+  if(q==1 && (millis()-w)>2000) {
+    strip.setPixelColor(0, 255, 0, 0);
+    strip.show();
+    noTone(D2);
+    q=0;
+    }
   if (  rfid.PICC_IsNewCardPresent() &&  rfid.PICC_ReadCardSerial())    // Look for new cards
   {
   MFRC522::PICC_Type piccType = rfid.PICC_GetType(rfid.uid.sak);
@@ -39,6 +53,11 @@ void loop() {
     Serial.print(rfid.uid.uidByte[i]);
   }
   Serial.println();
+  tone(D2,4000);
+  strip.setPixelColor(0, 0, 255, 0);
+  strip.show();
+  q=1;
+  w=millis();
   hit_url(rfid.uid.uidByte,rfid.uid.size);     
   rfid.PICC_HaltA();
   rfid.PCD_StopCrypto1();
