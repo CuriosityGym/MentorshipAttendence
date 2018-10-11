@@ -19,6 +19,9 @@ unsigned long w;
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(3, PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() { 
+  strip.begin();
+  strip.setPixelColor(0, 0, 0, 255);
+  strip.show();
   Serial.begin(9600);
   SPI.begin(); // Init SPI bus
   rfid.PCD_Init(); // Init MFRC522 
@@ -31,7 +34,6 @@ void setup() {
   wifiManager.autoConnect("Mentee_Attendance");
   Serial.println("connected:)");
   pinMode(D2,OUTPUT);
-  strip.begin();
   strip.setPixelColor(0, 255, 0, 0);
   strip.show();
 }
